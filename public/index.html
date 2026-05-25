@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STRIKEMSG</title>
-    <!-- Favicon link -->
     <link rel="icon" type="image/png" href="/branding/favicon.png">
     <style>
         /* Base Styling & Custom Properties */
@@ -36,7 +35,6 @@
             padding: 12px 20px;
             background: #1a191c;
             border-bottom: 2px solid;
-            /* Gradient split using your primary accent colors */
             border-image: linear-gradient(to right, var(--accent-red), var(--accent-orange)) 1;
         }
 
@@ -63,6 +61,48 @@
             display: block;
         }
 
+        /* Username Modal Overlay */
+        #username-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(35, 34, 39, 0.95);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1a191c;
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid #3d3a42;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h2 {
+            margin: 0 0 10px 0;
+            color: var(--accent-orange);
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+
+        .modal-content p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         /* Chat Window Stream */
         #chat { 
             flex: 1; 
@@ -82,9 +122,19 @@
             line-height: 1.4; 
             word-break: break-word; 
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sender-name {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         
-        /* Sent by YOU (Right Side - Dark/Light Blue Accents) */
+        /* Sent by YOU (Right Side) */
         .msg.me { 
             align-self: flex-end; 
             background: linear-gradient(135deg, var(--accent-dark-blue), #20316b); 
@@ -92,8 +142,12 @@
             border-bottom-right-radius: 4px; 
             border: 1px solid rgba(120, 175, 212, 0.2);
         }
+
+        .msg.me .sender-name {
+            display: none;
+        }
         
-        /* Sent by OTHERS (Left Side - Red/Orange Accents) */
+        /* Sent by OTHERS (Left Side) */
         .msg.them { 
             align-self: flex-start; 
             background: linear-gradient(135deg, var(--accent-red), #c8321e); 
@@ -101,9 +155,14 @@
             border-bottom-left-radius: 4px; 
             border: 1px solid rgba(245, 154, 28, 0.2);
         }
+
+        .msg.them .sender-name {
+            color: #ffcba4; 
+            opacity: 0.9;
+        }
         
         /* Form & Input Layout */
-        form { 
+        form.chat-form { 
             display: flex; 
             padding: 15px 20px; 
             background: #1a191c; 
@@ -122,9 +181,7 @@
             transition: all 0.2s ease; 
         }
 
-        input::placeholder {
-            color: var(--text-muted);
-        }
+        input::placeholder { color: var(--text-muted); }
 
         input:focus { 
             border-color: var(--accent-orange);
@@ -140,39 +197,34 @@
             font-size: 15px; 
             font-weight: 700; 
             border-radius: 28px; 
-            margin-left: 12px; 
             cursor: pointer; 
             transition: all 0.2s ease; 
         }
+        
+        form.chat-form button { margin-left: 12px; }
 
-        button:hover { 
-            background: #df8814; 
-            transform: translateY(-1px);
-        }
+        button:hover { background: #df8814; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
 
-        button:active {
-            transform: translateY(0);
-        }
-
-        /* Custom Scrollbar for the dark theme */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-main);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3d3a42;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4e4a54;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: #3d3a42; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4e4a54; }
     </style>
 </head>
 <body>
 
-    <!-- Branded Top Bar -->
+    <div id="username-modal">
+        <div class="modal-content">
+            <h2>IDENTIFY</h2>
+            <p>Enter an alias to join the network session.</p>
+            <form id="usernameForm" class="modal-form">
+                <input type="text" id="usernameInput" placeholder="Username..." autocomplete="off" maxlength="16" required>
+                <button type="submit">Enter Chat</button>
+            </form>
+        </div>
+    </div>
+
     <header>
         <div class="header-left">LAN MODE</div>
         <div class="header-center">STRIKEMSG</div>
@@ -181,13 +233,11 @@
         </div>
     </header>
 
-    <!-- Message Stream -->
     <div id="chat"></div>
 
-    <!-- Message Form -->
-    <form id="msgForm">
-        <input type="text" id="msgInput" placeholder="Write a message..." autocomplete="off" required>
-        <button type="submit">Send</button>
+    <form id="msgForm" class="chat-form">
+        <input type="text" id="msgInput" placeholder="Write a message..." autocomplete="off" required disabled>
+        <button type="submit" id="sendBtn" disabled>Send</button>
     </form>
 
     <script>
@@ -195,26 +245,71 @@
         const chat = document.getElementById('chat');
         const form = document.getElementById('msgForm');
         const input = document.getElementById('msgInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        const modal = document.getElementById('username-modal');
+        const usernameForm = document.getElementById('usernameForm');
+        const usernameInput = document.getElementById('usernameInput');
 
         // Generate a random ID for this session instance
         const myClientId = Math.random().toString(36).substring(2, 15);
+        let sessionUsername = "";
 
-        // Process incoming chat messages
+        // UI function to render a message bubble (used for both history and live messages)
+        function renderMessage(data) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('msg');
+            
+            if (data.senderId === myClientId) {
+                msgDiv.classList.add('me');
+            } else {
+                msgDiv.classList.add('them');
+                
+                // Add the sender's username above their text
+                const nameLabel = document.createElement('div');
+                nameLabel.classList.add('sender-name');
+                nameLabel.innerText = data.username || "Unknown";
+                msgDiv.appendChild(nameLabel);
+            }
+            
+            // Add the actual message text
+            const textNode = document.createElement('div');
+            textNode.innerText = data.text;
+            msgDiv.appendChild(textNode);
+            
+            chat.appendChild(msgDiv);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Handle Username Submission
+        usernameForm.onsubmit = (e) => {
+            e.preventDefault();
+            const chosenName = usernameInput.value.trim();
+            if (chosenName) {
+                sessionUsername = chosenName;
+                modal.style.display = 'none'; // Hide the modal
+                input.disabled = false;       // Unlock chat input
+                sendBtn.disabled = false;     // Unlock send button
+                input.focus();
+                
+                // Ensure scroll stays at the bottom when modal vanishes
+                chat.scrollTop = chat.scrollHeight;
+            }
+        };
+
+        // Process incoming chat payloads (history arrays OR single messages)
         ws.onmessage = (event) => {
             try {
-                const data = JSON.parse(event.data);
-                const msgDiv = document.createElement('div');
-                msgDiv.classList.add('msg');
+                const payload = JSON.parse(event.data);
                 
-                if (data.senderId === myClientId) {
-                    msgDiv.classList.add('me');
-                } else {
-                    msgDiv.classList.add('them');
+                // If it's the initial history payload on connect
+                if (payload.type === 'history') {
+                    payload.data.forEach(msg => renderMessage(msg));
+                } 
+                // If it's a live message from someone (or yourself)
+                else if (payload.type === 'message') {
+                    renderMessage(payload.data);
                 }
-                
-                msgDiv.innerText = data.text;
-                chat.appendChild(msgDiv);
-                chat.scrollTop = chat.scrollHeight;
             } catch (err) {
                 console.error("Error parsing chat payload:", err);
             }
@@ -225,13 +320,15 @@
             e.preventDefault();
             const textToSend = input.value.trim();
             
-            if (textToSend) {
-                const payload = {
+            if (textToSend && sessionUsername) {
+                // Now we include the username in the payload
+                const messageObj = {
                     senderId: myClientId,
+                    username: sessionUsername,
                     text: textToSend
                 };
                 
-                ws.send(JSON.stringify(payload));
+                ws.send(JSON.stringify(messageObj));
                 input.value = '';
             }
         };

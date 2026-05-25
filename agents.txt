@@ -1,0 +1,35 @@
+# PROJECT CONTEXT HANDOFF: STRIKEMSG
+# Date: May 25, 2026
+
+## 1. Core Identity & Architecture
+- **Project Name:** StrikeMSG
+- **Description:** A hyper-lightweight, persistent, real-time LAN messaging app.
+- **Backend Environment:** Node.js, Express, `ws` (WebSockets), `fs` (File System).
+- **Frontend Environment:** Vanilla HTML5, CSS3, JS. No frameworks.
+- **Routing Note:** The repository root contains the GitHub Pages marketing landing page (`index.html`). The actual functional web application is served from the `/public` directory by the Node server.
+
+## 2. Feature Set & Logic
+- **Real-Time Delivery:** Persistent WebSockets broadcast JSON payloads across the network.
+- **Identity:** Anonymous but session-based. Users must enter a username in a glass-morphic modal before the chat input unlocks. Names are attached to the WebSocket JSON payload.
+- **Data Persistence:** All incoming messages are logged into `chat.csv` at the root directory via a custom CSV parser (to safely handle user commas and quotes). 
+- **History Restoration:** Upon a new client connection, the server reads `chat.csv` and pushes a `{ type: 'history', data: [...] }` payload to the client to instantly restore previous chat logs. Live messages use `{ type: 'message', data: {...} }`.
+- **UI/UX:** Premium dark mode. Messages from the sender appear on the right (dark blue gradient). Messages from peers appear on the left (red gradient) with the username displayed above the bubble.
+
+## 3. Brand & Styling Guidelines
+- **Backgrounds:** Main `#232227`, Card/Header `#1a191c`
+- **Primary Accents:** `#f59a1c` (Orange), `#f0402a` (Red)
+- **Secondary Accents:** `#78afd4` (Light Blue), `#30479b` (Dark Blue)
+- **Text:** Main `#ffffff`, Muted `#a0a0a5`
+
+## 4. Current File Structure
+/
+├── index.html            # Marketing landing page (GitHub Pages root)
+├── server.js             # Node.js backend & WebSocket handler
+├── package.json          # Express, ws
+├── chat.csv              # Persistent message history log (auto-generated)
+├── agents.txt            # This context file
+├── README.md             # Project documentation
+└── public/               # The actual web app served by Node
+    ├── index.html        # Main application UI and client-side logic
+    └── branding/
+        └── favicon.png   # App icon

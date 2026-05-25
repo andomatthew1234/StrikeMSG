@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STRIKEMSG — Anonymous Real-Time LAN Chat</title>
+    <title>StrikeMSG — Hyper-chat app that works for you</title>
+    
+    <link rel="icon" type="image/png" href="./public/branding/favicon.png">
+    
     <style>
         :root {
             --bg-main: #232227;
@@ -51,9 +54,9 @@
         }
 
         h1 {
-            font-size: 48px;
+            font-size: 54px;
             font-weight: 900;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             margin: 0 0 16px 0;
             background: linear-gradient(to right, #ffffff, #e0e0e5);
             -webkit-background-clip: text;
@@ -61,9 +64,9 @@
         }
 
         p.tagline {
-            font-size: 18px;
+            font-size: 19px;
             color: var(--text-muted);
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             line-height: 1.6;
         }
@@ -96,6 +99,9 @@
             margin: 0 0 12px 0;
             font-size: 20px;
             color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .card p {
@@ -103,6 +109,14 @@
             font-size: 14px;
             color: var(--text-muted);
             line-height: 1.5;
+        }
+
+        code {
+            background: #2d2b31;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #ffb86c;
         }
 
         /* Action Footer */
@@ -155,15 +169,15 @@
 <body>
 
     <header>
-        <span class="badge">LAN Scope Mode</span>
-        <h1>STRIKEMSG</h1>
-        <p class="tagline">A hyper-lightweight, zero-friction, completely anonymous real-time chat room. Run it locally, talk instantly over Wi-Fi, store absolutely nothing.</p>
+        <span class="badge">LAN Option</span>
+        <h1>StrikeMSG</h1>
+        <p class="tagline">Hyper-chat app that works for you. In one command, host a LAN website where you can message others.</p>
     </header>
 
     <section class="features">
         <div class="card">
-            <h3>⚡ Pure WebSockets</h3>
-            <p>Direct bidirectional communication channel means data flows synchronously across connected peers with zero refreshing required.</p>
+            <h3>⚡ Get started quickly</h3>
+            <p>Open the folder. <code>node server.js</code>. Done. Now the website is active!</p>
         </div>
         <div class="card">
             <h3>🕵️ Zero Accounts</h3>
@@ -181,10 +195,9 @@
     </footer>
 
     <script>
-        // Automatically fetch the current repository link dynamically or hardcode it below
+        // Dynamically sets the button targets to point to your repository root link
         const repoUrl = window.location.href.split('.github.io')[0].replace('https://', 'https://github.com/') + '/' + window.location.pathname.split('/')[1];
         
-        // Setup direct safe fallback anchors if needed, otherwise dynamic detection handles it
         document.getElementById('githubBtn').href = repoUrl;
         document.getElementById('subLink').href = repoUrl;
     </script>
